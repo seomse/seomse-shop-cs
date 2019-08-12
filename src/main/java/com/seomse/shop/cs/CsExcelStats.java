@@ -72,7 +72,7 @@ public class CsExcelStats {
 
             Map<String, CsMonthStats> monthMap = new HashMap<>();
 
-            for(int rowIndex = 2 ; rowIndex < rowCount ; rowIndex++){
+            for(int rowIndex = 1 ; rowIndex < rowCount ; rowIndex++){
 
                 row = sheet.getRow(rowIndex);
                 XSSFCell dateCell = row.getCell(1);
