@@ -339,6 +339,8 @@ public class CsExcelStats {
                 rowIndex = shopIndex+1;
             }
 
+
+            sheet.setColumnWidth(0, 200);
             sheet.setColumnWidth(1, 2100);
 
             sheet.setColumnWidth(2, 3000);
