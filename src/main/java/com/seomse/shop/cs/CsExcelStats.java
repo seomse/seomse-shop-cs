@@ -2,14 +2,12 @@ package com.seomse.shop.cs;
 
 import com.seomse.commons.file.FileUtil;
 import com.seomse.commons.utils.ExcelGet;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +38,7 @@ public class CsExcelStats {
     @SuppressWarnings("FieldCanBeLocal")
     private XSSFSheet sheet;
     private XSSFRow row;
+    private XSSFWorkbook work = null;
     /**
      * 생성자
      */
@@ -61,7 +60,7 @@ public class CsExcelStats {
     };
 
     public void stats(String excelPath){
-        XSSFWorkbook work = null;
+
         try{
             work = new XSSFWorkbook(new FileInputStream(excelPath));
             excelGet.setXSSFWorkbook(work);
@@ -341,11 +340,11 @@ public class CsExcelStats {
 
 
             sheet.setColumnWidth(0, 200);
-            sheet.setColumnWidth(1, 2100);
+            sheet.setColumnWidth(1, 2500);
 
             sheet.setColumnWidth(2, 3000);
 
-            sheet.setColumnWidth(3, 1600);
+            sheet.setColumnWidth(3, 1800);
             for(int i=4 ; i<colIndex ; i++){
                 sheet.autoSizeColumn(i);
                 sheet.setColumnWidth(i, sheet.getColumnWidth(i)+100);
@@ -354,6 +353,9 @@ public class CsExcelStats {
             //틀고정
             sheet.createFreezePane(1,3);
 
+            Font headerFont = work.createFont();
+            headerFont.setFontName("맑은 고딕");
+            headerFont.setBold(true);
 
             CellStyle headStyle = work.createCellStyle();
             headStyle.setBorderTop(BorderStyle.THIN);
@@ -369,13 +371,80 @@ public class CsExcelStats {
                     row = sheet.createRow(i);
                 }
                 for(int j = 1 ; j<colIndex ; j++){
-                    cell = row.getCell(j);
-                    if(cell == null){
-                        cell = row.createCell(j);
+                    if(j == 1) {
+                        cell = row.getCell(j);
+                        if (cell == null) {
+                            cell = row.createCell(j);
+                        }
+
+                        CellStyle dateStyle = makeStyle();
+                        dateStyle.setFont(headerFont);
+                        cell.setCellStyle(dateStyle);
+                    }else{
+                        cell = row.getCell(j);
+                        if (cell == null) {
+                            cell = row.createCell(j);
+                        }
+                        cell.setCellStyle(headStyle);
                     }
-                    cell.setCellStyle(headStyle);
                 }
             }
+
+            //년월
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_TURQUOISE.getIndex());
+            XSSFCell headCell = sheet.getRow(1).getCell(1);
+            headCell.setCellStyle(headStyle);
+
+            //구분
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.PALE_BLUE.getIndex());
+            headCell = sheet.getRow(1).getCell(2);
+            headCell.setCellStyle(headStyle);
+
+            //문의수
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.CORNFLOWER_BLUE.getIndex());
+            headCell = sheet.getRow(1).getCell(3);
+            headCell.setCellStyle(headStyle);
+
+            //반품
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.ROSE.getIndex());
+            headCell = sheet.getRow(1).getCell(4);
+            headCell.setCellStyle(headStyle);
+
+            //교환
+            CsColumn csColumn= csColumnMap.get("교환");
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GOLD.getIndex());
+            headCell = sheet.getRow(1).getCell(csColumn.startIndex);
+            headCell.setCellStyle(headStyle);
+
+            //배송
+            csColumn= csColumnMap.get("배송");
+            headStyle  = makeHeaderStyle();
+            headerFont = work.createFont();
+            headerFont.setBold(true);
+            headerFont.setFontName("맑은 고딕");
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            headStyle.setFont(headerFont);
+            headCell = sheet.getRow(1).getCell(csColumn.startIndex);
+            headCell.setCellStyle(headStyle);
+
+            //기타
+            csColumn= csColumnMap.get("기타");
+            headStyle  = makeHeaderStyle();
+            headStyle.setFont(headerFont);
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREY_50_PERCENT.getIndex());
+            headCell = sheet.getRow(1).getCell(csColumn.startIndex);
+            headCell.setCellStyle(headStyle);
 
             sheet.setTabColor(new XSSFColor(Color.BLUE));
             String fileName = new File(excelPath).getParentFile().getAbsolutePath() + "/CS_통계_" + new SimpleDateFormat("yyyyMMdd").format(new Date()) +".xlsx";
@@ -418,12 +487,38 @@ public class CsExcelStats {
         return excelGet.getCellValue(row, cellNum);
     }
 
+    public CellStyle makeStyle(){
+        CellStyle cellStyle = work.createCellStyle();
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        return cellStyle;
+
+    }
+
+
+    public CellStyle makeHeaderStyle(){
+        CellStyle cellStyle = work.createCellStyle();
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return cellStyle;
+
+    }
+
 
     public static void main(String[] args) {
         CsExcelStats csExcelStats = new CsExcelStats();
 //        csExcelStats.stats(args[0]);
 
-        csExcelStats.stats("C:\\Users\\김용수\\Desktop\\CS_Stats.xlsx");
+        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
     }
 
 }
