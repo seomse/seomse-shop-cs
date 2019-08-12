@@ -407,7 +407,7 @@ public class CsExcelStats {
             //문의수
             headStyle  = makeHeaderStyle();
             headStyle.setFont(headerFont);
-            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.CORNFLOWER_BLUE.getIndex());
+            headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.SKY_BLUE.getIndex());
             headCell = sheet.getRow(1).getCell(3);
             headCell.setCellStyle(headStyle);
 
@@ -516,9 +516,9 @@ public class CsExcelStats {
 
     public static void main(String[] args) {
         CsExcelStats csExcelStats = new CsExcelStats();
-//        csExcelStats.stats(args[0]);
+        csExcelStats.stats(args[0]);
 
-        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
+//        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
     }
 
 }
