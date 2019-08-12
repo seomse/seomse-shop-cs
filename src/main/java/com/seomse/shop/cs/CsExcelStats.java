@@ -80,6 +80,8 @@ public class CsExcelStats {
                     break;
                 }
 
+                System.out.println(rowIndex);
+
                 Date date = dateCell.getDateCellValue();
 
                 if(date == null){
@@ -213,7 +215,9 @@ public class CsExcelStats {
                 csColumnMap.put(csColumn.name, csColumn);
             }
 
+
             sheet = work.createSheet("월별통계");
+            work.setSheetOrder(sheet.getSheetName(),1);
             XSSFRow row= sheet.createRow(1);
             XSSFCell cell = row.createCell(1);
             cell.setCellValue("년월");
@@ -345,6 +349,9 @@ public class CsExcelStats {
                 sheet.setColumnWidth(i, sheet.getColumnWidth(i)+100);
             }
 
+            //틀고정
+            sheet.createFreezePane(1,3);
+
 
             CellStyle headStyle = work.createCellStyle();
             headStyle.setBorderTop(BorderStyle.THIN);
@@ -412,9 +419,9 @@ public class CsExcelStats {
 
     public static void main(String[] args) {
         CsExcelStats csExcelStats = new CsExcelStats();
-        csExcelStats.stats(args[0]);
+//        csExcelStats.stats(args[0]);
 
-//        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
+        csExcelStats.stats("C:\\Users\\김용수\\Desktop\\CS_Stats.xlsx");
     }
 
 }
