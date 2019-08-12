@@ -223,7 +223,7 @@ public class CsExcelStats {
             cell = row.createCell(2);
             cell.setCellValue("구분");
             cell = row.createCell(3);
-            cell.setCellValue("문의수");
+            cell.setCellValue("건수");
             sheet.addMergedRegion(new CellRangeAddress(1,2,1,1));
             sheet.addMergedRegion(new CellRangeAddress(1,2,2,2));
             sheet.addMergedRegion(new CellRangeAddress(1,2,3,3));
@@ -344,7 +344,7 @@ public class CsExcelStats {
 
             sheet.setColumnWidth(2, 3000);
 
-            sheet.setColumnWidth(3, 1800);
+            sheet.setColumnWidth(3, 1500);
             for(int i=4 ; i<colIndex ; i++){
                 sheet.autoSizeColumn(i);
                 sheet.setColumnWidth(i, sheet.getColumnWidth(i)+100);
