@@ -1,11 +1,31 @@
+/*
+ * Copyright (C) 2020 Seomse Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.seomse.shop.cs;
 
-import com.seomse.commons.file.FileUtil;
-import com.seomse.commons.utils.ExcelGet;
+import com.seomse.commons.utils.ExceptionUtil;
+import com.seomse.commons.utils.FileUtil;
+import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.io.File;
@@ -18,25 +38,14 @@ import java.util.List;
 import java.util.*;
 
 /**
- * <pre>
- *  파 일 명 : CsExcelStats.java
- *  설    명 : Cs Excel  통계
- *
- *  작 성 자 : macle
- *  작 성 일 : 2019.08
- *  버    전 : 1.0
- *  수정이력 :
- *  기타사항 :
- * </pre>
- * @author Copyrights 2019 by ㈜섬세한사람들. All right reserved.
+ * @author macle
  */
 public class CsExcelStats {
 
-//    private static final Logger logger = LoggerFactory.getLogger(CsExcelStats.class);
+    private static final Logger logger = LoggerFactory.getLogger(CsExcelStats.class);
 
-    private ExcelGet excelGet;
-    @SuppressWarnings("FieldCanBeLocal")
-    private XSSFSheet sheet;
+    private final ExcelGet excelGet;
+
     private XSSFRow row;
     private XSSFWorkbook work = null;
     /**
@@ -46,16 +55,13 @@ public class CsExcelStats {
         excelGet = new ExcelGet();
     }
 
-    @SuppressWarnings("Convert2Lambda")
-    private final  Comparator<CsMonthStats> sortYm =  new Comparator<CsMonthStats>() {
-        @Override
-        public int compare(CsMonthStats c1, CsMonthStats c2 ) {
-            try {
-                return Long.compare(new SimpleDateFormat("yyyy-MM").parse(c1.ym).getTime(),new SimpleDateFormat("yyyy-MM").parse(c2.ym).getTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return 0;
-            }
+
+    private final  Comparator<CsMonthStats> sortYm = (c1, c2) -> {
+        try {
+            return Long.compare(new SimpleDateFormat("yyyy-MM").parse(c1.ym).getTime(), new SimpleDateFormat("yyyy-MM").parse(c2.ym).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
         }
     };
 
@@ -64,7 +70,7 @@ public class CsExcelStats {
         try{
             work = new XSSFWorkbook(new FileInputStream(excelPath));
             excelGet.setXSSFWorkbook(work);
-            sheet = work.getSheetAt(0);
+            XSSFSheet sheet = work.getSheetAt(0);
             int rowCount = excelGet.getRowCount(sheet);
 
             //정렬순위는 반품,
@@ -473,12 +479,12 @@ public class CsExcelStats {
 
 
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error(ExceptionUtil.getStackTrace(e));
         }finally {
             try {
                 if(work!=null) work.close();
             } catch (IOException e) {
-              e.printStackTrace();
+                logger.error(ExceptionUtil.getStackTrace(e));
             }
         }
     }
@@ -516,9 +522,7 @@ public class CsExcelStats {
 
     public static void main(String[] args) {
         CsExcelStats csExcelStats = new CsExcelStats();
-        csExcelStats.stats(args[0]);
-
-//        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
+        csExcelStats.stats("C:\\Users\\macle\\Desktop\\CS_Stats.xlsx");
     }
 
 }
