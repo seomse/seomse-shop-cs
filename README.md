@@ -9,16 +9,25 @@
  이와 비슷한 형태의 프로그램에는 사용가능 합니다.
  doc 디렉토리에 있는 sample.xlsx 또는 intstall 내용을 참조 하세요 
 
+
 # communication
-blog, homepage
+### blog, homepage
 - www.seomse.com
+- github.com/seomse/
+- seomse.tistory.com
+- seomse.github.io
 - seomse.com
 
-카카오톡 오픈톡
+### 카카오톡 오픈톡
  - https://open.kakao.com/o/g6vzOKqb
 
-슬랙 slack
- - https://seomse.slack.com/
+### 슬랙 slack
+- https://seomse.slack.com/
 
-email (협업, 외주)
+### email
  - comseomse@gmail.com
+ 
+ 
+# dev
+ - macle
+    -  github.com/macle86/
